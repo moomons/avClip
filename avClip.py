@@ -23,13 +23,11 @@ while True:
         if input != prevclip:
             print(u'新的剪贴板内容: ' + input)
 
-            if input.find('av') != -1:         # Bilibili: av10000 av10001
-                sear('av\d+', 'http://www.bilibili.com/video/', u'Bilibili video')
-
-            elif input.find('s/') != -1:  # Baiduyun:
+            if input.find('s/') != -1:  # Baiduyun: "链接：http://pan.baidu.com/s/1mhFoKxa 密码：w2le"
                 # Search for extract code
                 code = re.search('[\w\d]{8}', input).group(0)
                 url = 'http://pan.baidu.com/s/' + code
+                print(u'检测到百度云链接: ' + url)
 
                 # Search for pwd
                 input_trim = input[input.find(code) + 8:].lstrip()
@@ -37,25 +35,29 @@ while True:
                 if pwd is not None:
                     pwd = pwd.group(0)
                     pyperclip.copy(pwd)
-                    print(u'检测到百度云链接, 密码已复制到剪贴板: ' + url + ' ' + pwd)
-                else:
-                    print(u'检测到百度云链接: ' + url)
+                    print(u'密码已复制到剪贴板: ' + pwd)
                 webbrowser.open_new_tab(url)
 
-            elif input.find('lv') != -1:          # nico live: lv263651003
-                no = re.search('lv[\d]+', input)
-                if no is not None:
-                    no = no.group(0)
-                    url = 'http://live.nicovideo.jp/watch/' + no
-                    print(u'检测到 niconico 直播: ' + url)
-                    webbrowser.open_new_tab(url)
+            elif input.find('ab') != -1:  # acfun bangumi: ab1470255
+                sear('ab\d+', 'http://acfun.tudou.com/v/', u'Acfun bangumi')
 
-            elif input.find('id=') != -1:         # pixiv: id=57235066
-                rematch = re.findall('id=\d+', input)
-                for item in rematch:
-                    url = 'http://www.pixiv.net/member_illust.php?mode=medium&illust_' + item
-                    print(u'检测到 pixiv 作品 id: ' + url)
-                    webbrowser.open_new_tab(url)
+            elif input.find('ac') != -1:  # acfun video: ac2771372
+                sear('ac\d+', 'http://www.acfun.tv/v/', u'Acfun video')
+
+            elif input.find('av') != -1:  # bili video: av10000 av10001
+                sear('av\d+', 'http://www.bilibili.com/video/', u'Bilibili video')
+
+            elif input.find('sm') != -1:  # nico video: sm15853635
+                sear('sm\d+', 'http://www.nicovideo.jp/watch/', u'Niconico video(sm)')
+
+            elif input.find('so') != -1:  # nico video: so25829271
+                sear('so\d+', 'http://www.nicovideo.jp/watch/', u'Niconico video(so)')
+
+            elif input.find('lv') != -1:  # nico live: lv263651003
+                sear('lv\d+', 'http://live.nicovideo.jp/watch/', u'Niconico live')
+
+            elif input.find('id=') != -1:  # pixiv: id=57235066
+                sear('id=\d+', 'http://www.pixiv.net/member_illust.php?mode=medium&illust_', u'Pixiv 作品 id')
 
             # 防重复检测
             prevclip = input
