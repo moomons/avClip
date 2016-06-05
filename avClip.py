@@ -16,24 +16,26 @@ def sear(regexp, urlpref, message):
 
 prevclip = ''
 while True:
-    input = pyperclip.paste().lstrip().rstrip()
+    input = pyperclip.paste()
 
     if len(input) < 100:
         # 开始检测
         if input != prevclip:
             print(u'新的剪贴板内容: ' + input)
+            # 防重复检测
+            prevclip = input
 
             if input.find('s/') != -1:  # Baiduyun: "链接：http://pan.baidu.com/s/1mhFoKxa 密码：w2le"
                 # Search for extract code
-                code = re.search('[\w\d]{8}', input).group(0)
+                code = re.search('[\w\d]{6,10}', input).group(0)
                 url = 'http://pan.baidu.com/s/' + code
                 print(u'检测到百度云链接: ' + url)
-
                 # Search for pwd
                 input_trim = input[input.find(code) + 8:].lstrip()
                 pwd = re.search('[\w\d]{4}', input_trim)
                 if pwd is not None:
                     pwd = pwd.group(0)
+                    prevclip = pwd
                     pyperclip.copy(pwd)
                     print(u'密码已复制到剪贴板: ' + pwd)
                 webbrowser.open_new_tab(url)
@@ -59,8 +61,6 @@ while True:
             elif input.find('id=') != -1:  # pixiv: id=57235066
                 sear('id=\d+', 'http://www.pixiv.net/member_illust.php?mode=medium&illust_', u'Pixiv 作品 id')
 
-            # 防重复检测
-            prevclip = input
 
     # 检测间隔
     time.sleep(0.6)
